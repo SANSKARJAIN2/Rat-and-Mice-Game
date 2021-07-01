@@ -1,0 +1,180 @@
+<html>
+<style>
+  /* div {text-align: center;
+  position: relative;
+  top:100px;
+
+  } */
+  
+  button{width:50px;height:50px;}
+  
+  /* form {position: absolute;
+    top: 50% ;
+  left: 100px;
+  width: 300px;} */
+</style>
+
+<body style="background-color: #cccccc;
+background-image: linear-gradient(blue, magenta);">
+<div , style = "text-align: center;color:yellow;"><h1 >Rat and Mice Game</h1>  </div>
+  <div name = "forms", style=" position: relative; top: 10%; left: 5%;">
+  <form action="" id="rowForm"  >
+    
+    <label for="gridRows" style="font-size:18; font-weight:bold;color:white;" >Enter no. of rows in the grid</label><br><br>
+    <input type="number" name="rowsInput" id="getRows" ,value="5" onchange="setRows()" oninput="setRows()" ><br>
+  
+    <!-- <input type="button", onclick = "setRows()" value = "create grid" name="create grid" ,id="grider"> -->
+  </form>
+</div>
+  <div class = container id = "mouse placer">
+    <button class = "container" id="place" , type="submit" ,name="place mouse" style="width: 150; height:50px; position: relative; left: 80%; top: 50%;">
+      <p>PLACE MOUSE</p>
+    </button>
+  </div>
+  <div class ="container" id="new" ,align="center" style = "text-align: center;
+  position: relative;
+  top:100px;">
+
+  </div>
+
+  <script>
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+    let sleeptime = 500;
+    let n = 5;
+    let matrix = new Array(n);
+    var placingMouse = false;
+    var color = ['Red', 'White', 'Green', 'Yellow'];
+    var placeButton = document.getElementById("place");
+    placeButton.onclick = function () {
+      placingMouse = !placingMouse;
+
+    }
+    
+    createMatrix();
+    
+    function createMatrix(){
+      matrix = new Array(n);
+      for (let i = 0; i < n; i++) {
+      matrix[i] = new Array(n);
+    }
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        matrix[i][j] = 1;
+      }
+    }
+    matrix[0][n - 1] = 3;
+    }
+    
+ function traverse(x, y) {
+      if (!(x >= 0 && x < n && y >= 0 && y < n)) {
+        return false;
+      }
+      if (x == 0 && y == n - 1) {
+        return true;
+      }
+      if (matrix[x][y] != 1) {
+        return false;
+      }
+
+
+      let prevstate = matrix[x][y];
+      matrix[x][y] = 2;
+      var butt = document.getElementById(x + " " + y);
+      butt.innerText = matrix[x][y];
+      // await sleep(sleeptime);
+      
+      
+        // butt.style.backgroundColor = color[matrix[x][y]];
+        // butt.style.color = color[matrix[x][y]];
+        
+      
+      if (traverse(x - 1, y)) {
+        return true;
+      }
+      console.log("x+1,y")
+
+      if (traverse(x + 1, y)) {
+        return true;
+      }
+      console.log("x,y-1")
+      if (traverse(x, y - 1)) {
+        return true;
+      }
+      console.log("x,y+1")
+      if (traverse(x, y + 1)) {
+        return true;
+      }
+      matrix[x][y] = prevstate;
+      butt.innerText = matrix[x][y];
+      
+      
+      // await sleep(sleeptime);
+        // butt.style.backgroundColor = color[matrix[x][y]];
+        // butt.style.color = color[matrix[x][y]];
+      
+      return false;
+    }
+    var grid = document.getElementById("new");
+    
+    createMaze();
+    
+     function createMaze(){
+      grid.innerHTML = "";
+    for (let i = 0; i < n; i++) {
+      var d = document.createElement("div");
+      for (let j = 0; j < n; j++) {
+        var btn = document.createElement("button");
+        btn.innerText = matrix[i][j];
+        btn.id = i + " " + j;
+        btn.style.backgroundColor = color[matrix[i][j]];
+        btn.style.color = color[matrix[i][j]];
+        btn.onclick = async function () {
+          if (placingMouse) {
+            pacingMouse = !placingMouse;
+            if(!traverse(i, j)){
+              alert("Rat died due to hunger :(. No path found.")
+            }else{
+
+            for (let ti = 0; ti < n; ti++) {
+              for (let tj = 0; tj < n; tj++) {
+                // await sleep(1000);
+                var butt = document.getElementById(ti + " " + tj);
+                butt.innerText = matrix[ti][tj];
+                butt.style.color = color[matrix[ti][tj]];
+                butt.style.backgroundColor = color[matrix[ti][tj]];
+              }
+
+            }
+          }
+
+            //teaverse
+          } else {
+
+            var butt = document.getElementById(i + " " + j);
+            matrix[i][j] = 0;
+            butt.style.backgroundColor = color[matrix[i][j]];
+            butt.style.color = color[matrix[i][j]];
+            butt.innerText = matrix[i][j];
+          }
+        }
+        d.appendChild(btn);
+      }
+      grid.appendChild(d);
+    }
+    }
+    function setRows(){
+      // console.log("hellp");
+      var form = document.getElementById("rowForm");
+      n =   form.elements[0].value;
+      console.log(n);
+      createMatrix();
+      createMaze();
+      
+    }
+
+  </script>
+</body>
+
+</html>
